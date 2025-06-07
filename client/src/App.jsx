@@ -1,13 +1,17 @@
 import { useState } from 'react'
+import Code from "./Component/Code"
+import Review from "./Component/Review"
 
 import './App.css'
 
 function App() {
 
   return (
-    <>
-      hello world
-    </>
+    <div className="text-white flex flex-col sm:flex-row justify-around gap-3 sm:gap-1 bg-gray-800">
+      <Code />
+      <Review />
+    </div>
+
   )
 }
 
