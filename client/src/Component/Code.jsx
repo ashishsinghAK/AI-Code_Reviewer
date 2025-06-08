@@ -1,57 +1,77 @@
-import React, { useEffect, useState } from 'react'
-import "prismjs/themes/prism-tomorrow.css"
-import Editor from "react-simple-code-editor"
-import prism from 'prismjs'
-import axios from 'axios'
-import Review from "./Review"
-
+import React, { useEffect, useState } from 'react';
+import "prismjs/themes/prism-tomorrow.css";
+import Editor from "react-simple-code-editor";
+import prism from 'prismjs';
+import axios from 'axios';
+import Review from "./Review";
 
 const Code = () => {
   const [code, setCode] = useState('');
   const [reviewData, setReviewData] = useState('');
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    prism.highlightAll()
-  }, [])
+    prism.highlightAll();
+  }, []);
+
   const sendReview = async () => {
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/ai/get-response", { code })
-      // console.log(res.data)
-      setReviewData(res.msg);
-      setLoading(false);
+      const res = await axios.post("http://localhost:5000/ai/get-response", { code });
+      setReviewData(res.data.msg);
     } catch (err) {
-      console.log('Failed to fetch Review', err);
+      console.error('Failed to fetch Review', err);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   return (
-    <>
-      <div className='border-2 h-[50vh] w-[90vw] m-5 sm:h-[95vh] sm:w-[50vw] bg-gray-950 '>
+    <div className='flex flex-col lg:flex-row items-center justify-center lg:min-w-screen sm:w-screen'>
 
-        <Editor
-          value={code}
-          onValueChange={code => setCode(code)}
-          highlight={code => prism.highlight(code, prism.languages.javascript, 'javascript')}
-          padding={10}
-          style={{
-            fontFamily: "sans-serif",
-            fontSize: 16,
-            borderRadius: "5px",
-            height: "92%",
-            width: "100%"
-          }}
-        />
+      {/* Code Editor Box */}
+      <div className='relative m-5 w-[90vw] lg:w-[48vw] h-[50vh] lg:h-[95vh] bg-gray-900 rounded-lg flex flex-col overflow-x-hidden'>
 
-        <button onClick={sendReview} className='text-white
-      border-2 rounded-lg p-2 m-2 cursor-pointer'>Review</button>
+        {/* Header */}
+        <div className='h-10 bg-yellow-400 text-black px-4 flex items-center font-medium rounded-t-lg'>
+          Paste Your Code here...
+        </div>
 
+        {/* Code Area */}
+        <div className='flex-1 px-2 '>
+          <Editor
+            value={code}
+            onValueChange={setCode}
+            highlight={code =>
+              prism.highlight(code, prism.languages.javascript, 'javascript')
+            }
+            padding={10}
+            style={{
+              fontFamily: 'monospace',
+              fontSize: 16,
+              width: '100%',
+              outline: 'none',
+              whiteSpace: 'pre',
+              minHeight: '100%'
+            }}
+          />
+        </div>
 
+        {/* Review Button */}
+        <button
+          onClick={sendReview}
+          className='h-12 bg-blue-700 hover:bg-blue-800 text-white w-full rounded-b-lg font-semibold transition cursor-pointer'
+        >
+          {loading ? 'Reviewing...' : 'Review'}
+        </button>
       </div>
 
-      {reviewData && <Review data={reviewData} loading={loading}/>}
-    </>
+      {/* Review Component */}
+      <div className='w-[90vw] lg:w-[48vw] h-[50vh] lg:h-[95vh]'>
+        <Review data={reviewData} loading={loading} />
+      </div>
+    </div>
+  );
+};
 
-  )
-}
-
-export default Code
+export default Code;

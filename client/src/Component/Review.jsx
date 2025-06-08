@@ -1,18 +1,23 @@
 import React from 'react'
-import spinner from "../Common/spinner"
+import Spinner from "../Common/Spinner"
 import Markdown from "react-markdown"
 
-const Review = ({ data,loading }) => {
+const Review = ({ data, loading }) => {
   return (
-    <div className='border-2 h-[100vh] w-[90vw] m-5 sm:h-[95vh] sm:w-[50vw] bg-gray-700 text-white p-4 overflow-auto'>
+    <div className=' rounded-lg bg-gray-800 text-white p-4 h-[50vh] lg:h-[95vh] overflow-auto'>
       {
-        loading ? <><spinner/></> : <>
-        <pre>{typeof data === 'string' ? <Markdown>data</Markdown> : JSON.stringify(data, null, 2)}</pre>
-        </>
+        loading ? (
+          <div className="h-full w-full flex justify-center items-center">
+            <Spinner />
+          </div>
+        ) : (
+          <pre className='whitespace-pre-wrap overflow-x-hidden'>
+            {typeof data === 'string' ? <Markdown>{data}</Markdown> : JSON.stringify(data, null, 2)}
+          </pre>
+        )
       }
     </div>
-
   )
 }
 
-export default Review
+export default Review;
