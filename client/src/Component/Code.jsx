@@ -20,7 +20,7 @@ const Code = () => {
     try {
       if (!code.trim()) return;
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/ai/get-response", { code });
+      const res = await axios.post("https://ai-code-reviewer-dh0p.onrender.com/ai/get-response", { code });
       setReviewData(res.data.msg);
     } catch (err) {
       console.error('Failed to fetch Review', err);
